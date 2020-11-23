@@ -1,9 +1,5 @@
-@extends('layouts.app')
+<?php
 
-@section('content')
-    <div class="center jumbotron">
-        <div class="text-center">
-            <h1>Welcome to the Microposts</h1>
-        </div>
-    </div>
-@endsection
+// ユーザ登録
+Route::get('signup', 'Auth\RegisterController@showRegistrationForm')->name('signup.get');
+Route::post('signup', 'Auth\RegisterController@register')->name('signup.post');
