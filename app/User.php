@@ -99,8 +99,41 @@ class User extends Authenticatable
      /**
      * このユーザに関係するモデルの件数をロードする。
      */
-   
-
+    public function unfavorite ($micropostId)
+    {
+        
+        $exist = $this->is_favorite( $micropostId);
+       
+        if ($exist) {
+            $this->favorities()->detach($micropostId);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function favorities()
+    {
+        return $this->belongsToMany(Micropost::class, 'user_favorites', 'user_id', 'micropost_id')->withTimestamps();
+    }
+    
+    public function is_favorite($micropostId)
+    {
+        // フォロー中ユーザの中に $userIdのものが存在するか
+        return $this->favorities()->where('micropost_id', $micropostId)->exists();
+    }
+    public function favorite ($micropostId)
+    {
+        
+        $exist = $this->is_favorite( $micropostId);
+       
+        if ($exist) {
+            
+            return true;
+        } else {
+            $this->favorities()->attach($micropostId);
+            return false;
+        }
+    }
 
     /**
      * The attributes that are mass assignable.

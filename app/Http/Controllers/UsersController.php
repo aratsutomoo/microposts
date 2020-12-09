@@ -8,6 +8,7 @@ use App\User; // 追加
 
 class UsersController extends Controller
 {
+    /*
      public function index()
     {
         $data = [];
@@ -25,6 +26,15 @@ class UsersController extends Controller
 
         // Welcomeビューでそれらを表示
         return view('welcome', $data);
+    }
+    */
+    public function index()
+    {
+        $users = User::orderBy('id','desc')->paginate(10);
+       
+    return view('users.index',[
+        'users' => $users
+        ]);
     }
     
    public function show($id)
@@ -85,6 +95,22 @@ class UsersController extends Controller
             'users' => $followers,
         ]);
     }
-}
+    public function favorites($id)
+    {
+        $user = User::find($id);
+   
+        $favorites = $user->favorities()->paginate(10);
+        
+        // 関係するモデルの件数をロード
+        $user->loadRelationshipCounts();
+        
+        $data = [
+            'user' => $user,           //お気に入りポストを書いた人のid　自分ではない　一人の人のid
+            'microposts' => $favorites, // お気に入りにしたポストたち
+        ];    
+
+       return view('users.favorites', $data);
+   }
+
 
 }
